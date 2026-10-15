@@ -1,11 +1,11 @@
-const CACHE_NAME = 'prepmaster-shell-v7';
+const CACHE_NAME = 'prepmaster-shell-v8';
 const APP_SHELL = [
   './',
   './index.html',
-  './styles.css',
-  './script.js',
-  './syllabus-data.js',
-  './study-content.js',
+  './styles.css?v=8',
+  './script.js?v=8',
+  './syllabus-data.js?v=8',
+  './study-content.js?v=8',
   './manifest.webmanifest',
   './assets/prepmaster-logo.png'
 ];
