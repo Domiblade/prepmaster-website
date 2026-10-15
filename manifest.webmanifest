@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "PrepMaster — Your Smart Study Companion",
+  "short_name": "PrepMaster",
+  "description": "Study smarter, practise important topics, and track your exam preparation.",
+  "start_url": "./?mode=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#071329",
+  "theme_color": "#071329",
+  "icons": [
+    {
+      "src": "assets/prepmaster-logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
