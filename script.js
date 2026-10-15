@@ -509,6 +509,7 @@ function renderAuthScreen() {
 function renderAppShell() {
   const active = state.appView;
   const model = dashboardModels[active];
+  const installedAsApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
   return `
     <div class="app-layout">
@@ -567,7 +568,7 @@ function renderAppShell() {
             </div>
             <div class="heading-actions">
               <button class="button button-outline button-small" data-action="open-auth">Sign in to sync</button>
-              <button class="button button-primary button-small" data-action="install-app">Get the App</button>
+              ${installedAsApp ? '' : '<button class="button button-primary button-small" data-action="install-app">Get the App</button>'}
             </div>
           </div>
 
