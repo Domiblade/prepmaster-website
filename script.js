@@ -1,6 +1,5 @@
 const app = document.getElementById('main-content');
 const toastRegion = document.getElementById('toast-region');
-let installPromptEvent = null;
 
 const dashboardModels = {
   overview: {
@@ -238,40 +237,6 @@ function SVG(name) {
   return icons[name] || icons.grid;
 }
 
-function showInstallGuide() {
-  const oldDialog = document.getElementById('install-dialog');
-  if (oldDialog) oldDialog.remove();
-
-  const dialog = document.createElement('dialog');
-  dialog.id = 'install-dialog';
-  dialog.className = 'install-dialog';
-  dialog.innerHTML = `
-    <div class="install-dialog-head">
-      <img class="brand-image" src="assets/prepmaster-logo.png" alt="" />
-      <button class="icon-button" aria-label="Close install instructions" data-action="close-install">${SVG('close')}</button>
-    </div>
-    <span class="eyebrow"><span class="eyebrow-dot"></span> Study anywhere</span>
-    <h2>Install PrepMaster</h2>
-    <p class="install-intro">Add PrepMaster to your device for a full-screen, app-like study experience. When this website is hosted securely, supported browsers offer a direct install prompt.</p>
-    <div class="install-steps">
-      <div><strong>Android / Chrome</strong><span>Open the browser menu and choose “Install app” or “Add to Home screen”.</span></div>
-      <div><strong>iPhone / iPad</strong><span>Open in Safari, tap Share, then choose “Add to Home Screen”.</span></div>
-      <div><strong>Desktop</strong><span>Use the install icon in your browser’s address bar, or choose “Install PrepMaster” from the browser menu.</span></div>
-    </div>
-    <p class="install-note">This preview installs as a web app (PWA). A separate Android APK is not available in this project yet.</p>
-    <div class="install-dialog-actions">
-      <button class="button button-outline" data-action="close-install">Maybe later</button>
-      <button class="button button-primary" data-action="preview-app">Preview the app</button>
-    </div>
-  `;
-  document.body.appendChild(dialog);
-  dialog.addEventListener('click', event => {
-    if (event.target === dialog) dialog.close();
-  });
-  dialog.addEventListener('close', () => dialog.remove(), { once: true });
-  dialog.showModal();
-}
-
 function renderPublicHome() {
   return `
     <header class="public-header">
@@ -288,7 +253,7 @@ function renderPublicHome() {
         </nav>
         <div class="public-actions">
           <button class="button button-outline" data-action="public-login">Log in</button>
-          <button class="button button-primary" data-action="install-app">Get the App</button>
+          <a class="button button-primary" href="downloads/PrepMaster.apk" download="PrepMaster.apk">Download Android App</a>
         </div>
       </div>
     </header>
@@ -301,10 +266,11 @@ function renderPublicHome() {
             <h1>Study <span>Smarter.</span> Prepare <span>Better.</span> Achieve More.</h1>
             <p>Everything you need to prepare for exams, practise important topics, track your progress, and reach your academic goals in one place.</p>
             <div class="hero-actions">
-              <button class="button button-primary" data-action="install-app">Get the App</button>
+              <a class="button button-primary" href="downloads/PrepMaster.apk" download="PrepMaster.apk">Download Android App</a>
               <button class="button button-outline" data-action="public-roadmap">Explore Roadmap</button>
               <button class="button button-quiet" data-action="public-mocks">View Mock Tracker</button>
             </div>
+            <p class="apk-download-note">Android only · 24 MB APK. Android may ask you to allow installs from Chrome. Install only if you trust this app. Updates must be downloaded and installed manually.</p>
             <div class="hero-proof">
               <span class="proof-mark">${SVG('target')}</span>
               <span>Built for JEE Main · BITSAT · EAMCET</span>
@@ -388,7 +354,7 @@ function renderPublicHome() {
             <h2>Three subjects. One clear study roadmap.</h2>
             <p>Organise 62 Physics, Chemistry, and Mathematics chapters by Class 11 or 12, then track theory, practice, PYQs, and revision for JEE Main, BITSAT, and EAMCET.</p>
             <div class="hero-actions">
-              <button class="button button-primary" data-action="install-app">Install PrepMaster</button>
+              <a class="button button-primary" href="downloads/PrepMaster.apk" download="PrepMaster.apk">Download Android App</a>
             </div>
           </div>
           <div class="teaser-list">
@@ -448,7 +414,7 @@ function renderPublicHome() {
             <h2>Start your smarter study routine today.</h2>
             <p>Join PrepMaster and build the habits that lead to stronger exam outcomes.</p>
           </div>
-          <button class="button button-primary" data-action="install-app">Get the App</button>
+          <a class="button button-primary" href="downloads/PrepMaster.apk" download="PrepMaster.apk">Download Android App</a>
         </div>
       </section>
     </main>
@@ -568,7 +534,7 @@ function renderAppShell() {
             </div>
             <div class="heading-actions">
               <button class="button button-outline button-small" data-action="open-auth">Sign in to sync</button>
-              ${installedAsApp ? '' : '<button class="button button-primary button-small" data-action="install-app">Get the App</button>'}
+              ${installedAsApp ? '' : '<a class="button button-primary button-small" href="downloads/PrepMaster.apk" download="PrepMaster.apk">Download Android App</a>'}
             </div>
           </div>
 
@@ -1179,44 +1145,6 @@ function renderCurrentView() {
 }
 
 function handleAction(actionName, target) {
-  if (actionName === 'install-app') {
-    const installed = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-    if (installed) {
-      state.mode = 'app';
-      renderCurrentView();
-      return;
-    }
-    if (!installPromptEvent) {
-      showInstallGuide();
-      return;
-    }
-    installPromptEvent.prompt();
-    installPromptEvent.userChoice.then(choice => {
-      installPromptEvent = null;
-      if (choice.outcome === 'accepted') {
-        showToast('PrepMaster is being installed.');
-      } else {
-        showInstallGuide();
-      }
-    }).catch(error => {
-      console.error('PrepMaster install prompt failed:', error);
-      showInstallGuide();
-    });
-    return;
-  }
-  if (actionName === 'close-install') {
-    const dialog = document.getElementById('install-dialog');
-    if (dialog?.open) dialog.close();
-    return;
-  }
-  if (actionName === 'preview-app') {
-    const dialog = document.getElementById('install-dialog');
-    if (dialog?.open) dialog.close();
-    state.mode = 'app';
-    state.appView = 'dashboard';
-    renderCurrentView();
-    return;
-  }
   if (actionName === 'public-login') {
     state.mode = 'auth';
     renderCurrentView();
@@ -1564,16 +1492,6 @@ document.addEventListener('change', event => {
     state.mockExam = input.value;
     renderCurrentView();
   }
-});
-
-window.addEventListener('beforeinstallprompt', event => {
-  event.preventDefault();
-  installPromptEvent = event;
-});
-
-window.addEventListener('appinstalled', () => {
-  installPromptEvent = null;
-  showToast('PrepMaster was installed successfully.');
 });
 
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {

@@ -173,6 +173,7 @@ svg { display: block; }
 .hero-copy > p { max-width: 570px; margin: 0; color: #68758e; font-size: 1.08rem; line-height: 1.8; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .hero-actions .button { min-height: 52px; padding: 0 22px; }
+.apk-download-note { max-width: 560px; margin: 12px 0 0; color: #758097; font-size: .78rem; line-height: 1.6; }
 .hero-proof { display: flex; align-items: center; gap: 12px; margin-top: 28px; color: #758097; font-size: .85rem; }
 .avatar-stack { display: flex; padding-left: 4px; }
 .avatar-stack span {
@@ -647,6 +648,7 @@ body {
 .hero h1, .section-title h2, .course-teaser h2, .home-cta h2 { color: #f1f5ff; }
 .hero h1 span { color: #70a5ff; text-shadow: 0 0 32px #386bff55; }
 .hero-copy > p { color: #a7b7d3; }
+.apk-download-note { color: #9aaccb; }
 .hero-proof { color: #9aaccb; }
 .avatar-stack span { border-color: #0a1831; }
 .hero-orbit { border-color: #6385c433; }
